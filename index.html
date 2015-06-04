@@ -1,1 +1,244 @@
-<html></html>
+﻿<html>
+<head>
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="css/materialize.css" media="screen,projection" />
+    <title>Salary Converter</title>
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        table th, td {
+            text-align: right;
+            padding: 10px 5px;
+        }
+    </style>
+</head>
+
+<body ng-app="app">
+    <nav class="light-blue lighten-1" role="navigation">
+        <div class="nav-wrapper container">
+            <a id="logo-container" href="#" class="brand-logo center">Aswig Solutions</a>
+        </div>
+    </nav>
+    <div id="index-banner" class="container">
+        <div class="section no-pad-bot">
+            <div class="container">
+
+                <h1 class="header center orange-text text-lighten-2">Salary Converter</h1>
+                <div class="row center">
+                    <h5 class="header col s12 light">Chuyển lương từ Gross sang Net và ngược lại</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div ng-controller="MyCtrl" class="container">
+        <div class="row">
+            <h5 class="light-blue-text text-lighten-1">Thu nhập</h5>
+            <div class="input-field col s4">
+                <input ng-model="vnd" id="vnd" type="text" />
+                <label for="vnd">VND</label>
+            </div>
+            <div class="input-field col s4">
+                <input ng-model="usd" id="usd" type="text" />
+                <label for="usd">USD</label>
+            </div>
+            <div class="input-field col s4">
+                <input ng-model="RATIO" id="ratio" type="text" /> 1 USD = ... VND
+                <label for="ratio">Tỉ giá</label>
+            </div>
+        </div>
+        <div class="row">
+            <h5 class="light-blue-text text-lighten-1">Bảo hiểm</h5>
+            <div class="input-field col s3">
+                <input ng-model="MIN_SALARY" id="min" type="text" /> VND
+                <label for="min">Lương tối thiểu</label>
+            </div>
+            <div class="input-field col s3">
+                <input ng-model="SOCIAL" id="social" type="text" /> %
+                <label for="social">Xã hội</label>
+            </div>
+            <div class="input-field col s3">
+                <input ng-model="HEALTH" id="health" type="text" /> %
+                <label for="health">Y tế</label>
+            </div>
+            <div class="input-field col s3">
+                <input ng-model="UNEMPLOY" id="unem" type="text" /> %
+                <label for="unem">Thất nghiệp</label>
+            </div>
+        </div>
+        <div class="row">
+            <h5 class="light-blue-text text-lighten-1">Giảm trừ gia cảnh</h5>
+            <div class="input-field col s4">
+                <input ng-model="PERSONAL_REDUCE" id="personal" type="text" /> VND
+                <label for="personal">Cá nhân</label>
+            </div>
+            <div class="input-field col s4">
+                <input ng-model="DEPENDANT_REDUCE" id="dep" type="text" /> VND
+                <label for="dep">Phụ thuộc</label>
+            </div>
+            <div class="input-field col s4">
+                <input ng-model="dependants" id="depNum" type="text" />
+                <label for="depNum">Số người phụ thuộc</label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="center">
+                <button class="btn btn-large waves-effect waves-light">
+                    Gross => NET
+                </button>
+                <button class="btn btn-large waves-effect waves-light">
+                    NET => Gross
+                </button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="right" style="text-align: right">
+                <h6 class="red-text text-darken-2">GROSS : {{grossSalary}} (VND) ≈ {{grossSalary / RATIO}} (USD)</h6>
+                <h6 class="red-text text-darken-2">NET : {{netSalary}} (VND) ≈ {{netSalary / RATIO}} (USD)</h6>
+            </div>
+        </div>
+
+        <div class="row">
+            <h5 class="light-blue-text text-lighten-1">Diễn giải chi tiết (VND)</h5>
+
+            <table class='table bordered'>
+                <tr>
+                    <th>Lương GROSS </th>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <th>Bảo hiểm xã hội (8%)</th>
+                    <td>- 0</td>
+                </tr>
+                <tr>
+                    <th> Bảo hiểm y tế (1.5%)</th>
+                    <td>- 0</td>
+                </tr>
+                <tr>
+                    <th>Bảo hiểm thất nghiệp (1%) </th>
+                    <td>- 0</td>
+                </tr>
+                <tr>
+                    <th>Thu nhập trước thuế </th>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <th>Giảm trừ gia cảnh bản thân</th>
+                    <td>- 9,000,000</td>
+                </tr>
+                <tr>
+                    <th> Giảm trừ gia cảnh người phụ thuộc </th>
+                    <td>- 0</td>
+                </tr>
+                <tr>
+                    <th>Thu nhập chịu thuế </th>
+                    <td> 0</td>
+                </tr>
+                <tr>
+                    <th> Thuế thu nhập cá nhân</th>
+                    <td>- 0</td>
+                </tr>
+                <tr>
+                    <td><b>Lương NET</b><br />
+                        (Thu nhập trước thuế - Thuế thu nhập cá nhân)
+                    </td>
+                    <td> 0</td>
+                </tr>
+            </table>
+
+        </div>
+        <div class="row"><h5>Chi tiết thuế thu nhập cá nhân (VND)</h5>
+            <table class='table bordered'>
+                <tr class="light-blue-text text-lighten-1">
+                    <th>Mức chịu thuế</th>
+                    <th>Thuế suất </th>
+                    <th>Tiền nộp </th>
+                </tr>
+
+                <tr><td>Đến 5 triệu VND</td><td>5%</td><td>0</td></tr>
+                <tr><td>Trên 5 triệu VND đến 10 triệu VND</td><td>10%</td><td>0</td></tr>
+                <tr><td>Trên 10 triệu VND đến 18 triệu VND</td><td>15%</td><td>0</td></tr>
+                <tr><td>Trên 18 triệu VND đến 32 triệu VND</td><td>20%</td><td>0</td></tr>
+                <tr><td>Trên 32 triệu VND đến 52 triệu VND</td><td>25%</td><td>0</td></tr>
+                <tr><td>Trên 52 triệu VND đến 80 triệu VND</td><td>30%</td><td>0</td></tr>
+                <tr><td>Trên 80 triệu VND</td><td>35%</td><td>0</td></tr>
+            </table>
+        
+        </div>
+        <div class="row">
+            <h5 class="light-blue-text text-lighten-1">Người lao động trả (VND)</h5>
+            <table class='table bordered'>
+                <tr>
+                    <th>Lương GROSS</th>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <th>Bảo hiểm xã hội(18%)</th>
+                    <td> 0</td>
+                </tr>
+                <tr>
+                    <th>Bảo hiểm y tế(3%)</th>
+                    <td> 0</td>
+                </tr>
+                <tr>
+                    <th>Bảo hiểm thất nghiệp(1%)</th>
+                    <td> 0</td>
+                </tr>
+                <tr>
+                    <th>Tổng cộng</th>
+                    <td>0</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <footer class="page-footer orange">
+        <div class="footer-copyright">
+            <div class="container">
+                Copyright by <a class="orange-text text-lighten-3" href="http://materializecss.com">H.Pham | Aswig Solutions</a>
+            </div>
+        </div>
+    </footer>
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="js/jquery-2.1.4.js"></script>
+    <script type="text/javascript" src="js/materialize.js"></script>
+    <script type="text/javascript" src="js/angular.js"></script>
+
+
+    <script>
+        var app = angular.module('app', []);
+
+        app.controller('MyCtrl', [
+            '$scope', function ($scope) {
+                //Constant
+                $scope.RATIO = 22000;
+                $scope.MIN_SALARY = 1150000;
+                $scope.AREA_MIN_SALARY = 3100000; //Tính bảo hiểm thất nghiệp
+                $scope.SOCIAL = 8;
+                $scope.HEALTH = 1.5;
+                $scope.UNEMPLOY = 1;
+                $scope.PERSONAL_REDUCE = 9000000;
+                $scope.DEPENDANT_REDUCE = 3600000;
+
+                //output
+                $scope.grossSalary = 0;
+                $scope.netSalary = 0;
+
+                $scope.vnd = 0;
+                $scope.usd = 0;
+                $scope.dependants = 0;
+
+                $scope.totalSalary = $scope.vnd + $scope.usd * $scope.RATIO;
+            }
+        ]);
+    </script>
+</body>
+</html>
